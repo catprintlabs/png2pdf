@@ -9,14 +9,14 @@ namespace png2pdf {
 
 class Converter {
  public:
-  Converter(std::string in, std::string out, int dpi_value);
+  Converter(std::string input_file, std::string output_file, int dpi);
 
   void Convert();
  private:
-  std::string input;
-  std::string output;
-  uint_32 width, height, dpi;
-  std::string rgb_file, alpha_file;
+  std::string input_file_;
+  std::string output_file_;
+  std::string rgb_file_, alpha_file_;
+  uint_32 width_, height_, dpi_;
 
   std::string GenerateTempFilePath();
   void SplitPng();

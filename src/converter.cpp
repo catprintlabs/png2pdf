@@ -1,12 +1,12 @@
-#include "Converter.hpp"
+#include "converter.hpp"
 
 namespace png2pdf {
 
-Converter::Converter(std::string in, std::string out, int dpi_value)
+Converter::Converter(std::string input_file, std::string output_file, int dpi)
 {
-  input = in;
-  output = out;
-  dpi = dpi_value;
+  input_file_ = input_file;
+  output_file_ = output_file;
+  dpi_ = dpi;
 };
 
 void Converter::Convert()
@@ -26,16 +26,16 @@ std::string Converter::GenerateTempFilePath()
 
 void Converter::SplitPng()
 {
-  image<rgba_pixel> png(input);
+  image<rgba_pixel> png(input_file_);
 
-  width = png.get_width();
-  height = png.get_height();
+  width_ = png.get_width();
+  height_ = png.get_height();
 
-  image<rgb_pixel> rgb_png(width, height);
-  image<gray_pixel> alpha_png(width, height);
+  image<rgb_pixel> rgb_png(width_, height_);
+  image<gray_pixel> alpha_png(width_, height_);
 
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+  for (int y = 0; y < height_; y++) {
+    for (int x = 0; x < width_; x++) {
       rgba_pixel pixel(png.get_pixel(x, y));
       rgb_pixel new_pixel;
 
@@ -49,30 +49,30 @@ void Converter::SplitPng()
     }
   }
 
-  rgb_file = GenerateTempFilePath();
-  alpha_file = GenerateTempFilePath();
+  rgb_file_ = GenerateTempFilePath();
+  alpha_file_ = GenerateTempFilePath();
 
-  rgb_png.write(rgb_file);
-  alpha_png.write(alpha_file);
+  rgb_png.write(rgb_file_);
+  alpha_png.write(alpha_file_);
 }
 
 void Converter::EmbedPngs()
 {
-  PdfStreamedDocument document(output.c_str());
+  PdfStreamedDocument document(output_file_.c_str());
   PdfPage *page;
   PdfPainter painter;
-  PdfRect rect(0.0, 0.0, (width / dpi) * 72, (height / dpi) * 72);
+  PdfRect rect(0.0, 0.0, (width_ / dpi_) * 72, (height_ / dpi_) * 72);
   PdfImage image(&document);
   PdfImage mask(&document);
-  double scale(72.0 / dpi);
+  double scale(72.0 / dpi_);
 
   page = document.CreatePage(rect);
   painter.SetPage(page);
 
-  mask.LoadFromPng(alpha_file.c_str());
+  mask.LoadFromPng(alpha_file_.c_str());
   image.SetImageSoftmask(&mask);
 
-  image.LoadFromPng(rgb_file.c_str());
+  image.LoadFromPng(rgb_file_.c_str());
   painter.DrawImage(0.0, 0.0, &image, scale, scale);
 
   painter.FinishPage();
@@ -81,8 +81,8 @@ void Converter::EmbedPngs()
 
 void Converter::CleanUp()
 {
-  std::remove(rgb_file.c_str());
-  std::remove(alpha_file.c_str());
+  std::remove(rgb_file_.c_str());
+  std::remove(alpha_file_.c_str());
 }
 
 } // namespace png2pdf

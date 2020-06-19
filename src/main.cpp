@@ -1,18 +1,19 @@
 #include "boost/program_options.hpp"
 
-#include "Converter.hpp"
+#include "converter.hpp"
 
 #define VERSION PNG2PDF_VERSION
+#define EXECUTABLE PNG2PDF_EXECUTABLE
 
 std::string input_file, output_file;
 int dpi;
 
 int ParseOptions(int argc, char* argv[])
 {
-  boost::program_options::options_description desc("Allowed Options");
+  boost::program_options::options_description desc("Options");
 
   desc.add_options()
-    ("help,h", "produce help message")
+    ("help,h", "print program options")
     ("input-file,i", boost::program_options::value<std::string>(), "PNG file to be converted")
     ("output-file,o", boost::program_options::value<std::string>(), "PDF file to be generated")
     ("dpi,d", boost::program_options::value<int>(&dpi)->default_value(72),
@@ -23,8 +24,10 @@ int ParseOptions(int argc, char* argv[])
   boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), var);
   boost::program_options::notify(var);
 
-  if (var.empty() || var.count("help")) {
-    std::cout << "Version: " << VERSION << "\n" << desc << "\n";
+  if (var.size() == 1 || var.count("help")) {
+    std::cout << "Version: " << VERSION << "\n";
+    std::cout << "Usage: " << EXECUTABLE << " [options ...]\n";
+    std::cout << "\n" << desc << "\n";
 
     return 1;
   }

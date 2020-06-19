@@ -7,7 +7,9 @@ set(VERSION_MINOR "1")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
-add_definitions(-DPNG2PDF_VERSION="${VERSION}")
+set(EXECUTABLE "png2pdf")
+
+add_definitions(-DPNG2PDF_VERSION="${VERSION}" -DPNG2PDF_EXECUTABLE="${EXECUTABLE}")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -29,7 +31,7 @@ find_package(Boost REQUIRED COMPONENTS system filesystem program_options)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_RUNTIME ON)
 
-add_executable(png2pdf src/main.cpp src/Converter.cpp)
+add_executable(png2pdf src/main.cpp src/converter.cpp)
 
 target_link_libraries(
   png2pdf
@@ -39,3 +41,15 @@ target_link_libraries(
 )
 
 install(TARGETS png2pdf RUNTIME DESTINATION bin)
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A utility to convert transparent PNG files to the PDF format")
+SET(CPACK_PACKAGE_VENDOR "adamcreekroad")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/INSTALL.md")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+
+SET(CPACK_PACKAGE_VERSION_MAJOR ${VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${VERSION_PATCH})
+SET(CPACK_PACKAGE_EXECUTABLES ${EXECUTABLE})
+
+INCLUDE(CPack)
