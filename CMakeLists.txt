@@ -26,6 +26,11 @@ if(PNG_FOUND)
 	message(STATUS "Found the PNG library")
 endif(PNG_FOUND)
 
+find_package(PNG++ REQUIRED)
+if(PNG++_FOUND)
+	message(STATUS "Found the png++ library")
+endif(PNG++_FOUND)
+
 find_package(Boost REQUIRED COMPONENTS system filesystem program_options)
 
 set(Boost_USE_STATIC_LIBS ON)
@@ -36,7 +41,7 @@ add_executable(png2pdf src/main.cpp src/converter.cpp)
 target_link_libraries(
   png2pdf
   ${LIBPODOFO_LIBRARY}
-  ${PNG_LIBRARY}
+  ${PNG_LIBRARIES}
   ${Boost_LIBRARIES}
 )
 
