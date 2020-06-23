@@ -8,15 +8,15 @@
 std::string input_file, output_file;
 int dpi;
 
-int ParseOptions(int argc, char* argv[])
-{
+int ParseOptions(int argc, char* argv[]) {
   boost::program_options::options_description desc("Options");
 
   desc.add_options()
     ("help,h", "print program options")
     ("input-file,i", boost::program_options::value<std::string>(), "PNG file to be converted")
     ("output-file,o", boost::program_options::value<std::string>(), "PDF file to be generated")
-    ("dpi,d", boost::program_options::value<int>(&dpi)->default_value(72),
+    ("dpi,d",
+      boost::program_options::value<int>(&dpi)->default_value(png2pdf::Converter::kPointsPerInch),
       "DPI of PNG provided, defaults to 72")
   ;
 
@@ -48,18 +48,15 @@ int ParseOptions(int argc, char* argv[])
     return 1;
   }
 
-  if (var.count("dpi"))
-    dpi = var["dpi"].as<int>();
+  if (var.count("dpi")) dpi = var["dpi"].as<int>();
 
   return 0;
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   int parsed(ParseOptions(argc, argv));
 
-  if (parsed > 0)
-    return parsed;
+  if (parsed > 0) return parsed;
 
   png2pdf::Converter converter(input_file, output_file, dpi);
 
