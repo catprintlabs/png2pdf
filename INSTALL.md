@@ -22,10 +22,10 @@ sudo apt install cmake libboost-system-dev libboost-filesystem-dev libboost-prog
 #### macOS
 
 ```shell-script
-brew install cmake boost libpng podofo
+brew install cmake boost libpng podofo png++
 ```
 
-png++ needs to be installed manually:
+on Ubuntu png++ needs to be installed manually:
 
 ```shell-script
 cd /usr/local/src # Or wherever you compile code
